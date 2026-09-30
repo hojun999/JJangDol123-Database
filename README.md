@@ -2,6 +2,18 @@
 
 GitHub Pages용 한국어 볼링 기록 웹사이트입니다. 조회는 공개, 저장·수정은 Supabase에 등록한 관리자만 가능합니다.
 
+## 현재 저장소 연결 상태
+
+소스와 배포 워크플로는 `hojun999/JJangDol123-Database`에 업로드했고, 제공받은 Supabase URL과 공개키도 반영했습니다. GitHub Actions의 테스트·빌드는 통과했습니다. 아직 아래 초기 설정이 필요합니다.
+
+1. [저장소 Pages 설정](https://github.com/hojun999/JJangDol123-Database/settings/pages) → Build and deployment → Source를 **GitHub Actions**로 선택합니다.
+2. [첫 배포 실행](https://github.com/hojun999/JJangDol123-Database/actions/runs/36715093820) → **Re-run jobs → Re-run failed jobs**를 누릅니다. 첫 실행은 Pages 미활성화로 configure-pages 단계에서 실패했습니다.
+3. [Supabase SQL Editor](https://supabase.com/dashboard/project/sxkvkzaxydszoweygsne/sql/new)에서 [schema.sql](supabase/schema.sql) 전체를 실행합니다.
+4. [Supabase Authentication Users](https://supabase.com/dashboard/project/sxkvkzaxydszoweygsne/auth/users)에서 관리자 계정을 만들고 이메일 확인 상태를 설정합니다. User UID를 [admin.sql](supabase/admin.sql)의 UUID 자리에 넣어 SQL Editor에서 실행합니다.
+5. 배포 성공 후 [볼링노트](https://hojun999.github.io/JJangDol123-Database/)에 접속해 관리자 로그인·저장을 확인합니다. Supabase 설정이 끝나기 전에는 연결 오류 안내가 표시됩니다.
+
+관리자 비밀번호는 채팅이나 저장소에 올리지 않습니다. 현재 연결 도구에는 Supabase SQL 실행과 GitHub Pages 관리 기능이 없어 위 설정을 대신 완료하지 못했습니다.
+
 ## 포함 기능
 
 - 참가자 이름과 기본 일반/학생/회원 구분 등록

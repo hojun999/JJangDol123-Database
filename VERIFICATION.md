@@ -17,7 +17,7 @@
 
 - 실제 Supabase 관리자 로그인 및 서버 권한 정책 실행
 - 실제 공동 데이터 저장과 클라우드 사진 업로드
-- GitHub Actions 실행 및 github.io 배포 주소 접속
+- github.io 배포 주소 접속 (GitHub Actions 테스트·빌드는 통과)
 - 다른 점수판·사진 각도·4인 결과 사진에 대한 인식 정확도
 
 Supabase 및 GitHub 저장소 연결 후 README의 확인 절차를 수행해야 합니다. 샘플 한 장의 정확한 인식이 모든 사진의 정확도를 보장하지 않습니다.
@@ -27,5 +27,8 @@ Supabase 및 GitHub 저장소 연결 후 README의 확인 절차를 수행해야
 - 제공받은 Supabase Project URL과 publishable key를 public/config.js에 반영했습니다.
 - 공개키로 REST API 접속은 확인했습니다. 응답은 404 / PGRST205이며 public.bowling_state 테이블이 없는 상태입니다.
 - 지정 GitHub 저장소는 공개·main 기본 브랜치로 확인했습니다.
-- 초기 GitHub 업로드는 403으로 거부됐으나, 앱 설치 후 첫 파일(.gitignore) 업로드에 성공했습니다. 프로젝트 업로드 및 Pages 배포 결과는 이후 업데이트합니다.
+- 앱 설치 후 전체 소스를 main에 업로드했습니다. 구현 커밋: 07bc88f000f22fe686f832d65fb687e9fbb54426.
+- GitHub Actions 36715093820에서 npm ci, npm test, npm run build가 모두 통과했습니다.
+- configure-pages 단계에서 Pages 사이트 미활성화(Not Found)로 실패하여 실제 배포는 아직 완료되지 않았습니다. 저장소 Pages Source를 GitHub Actions로 설정한 뒤 재실행해야 합니다.
+- Supabase SQL 도구가 노출되지 않아 schema.sql 및 관리자 등록 SQL은 대시보드에서 실행해야 합니다.
 - 프로젝트 공개키 설정 후 빌드 및 계산 검사는 다시 통과했습니다.
