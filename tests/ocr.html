@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="/"><title>사진 OCR 확인</title>
+<style>body{font:16px system-ui;margin:24px;max-width:1200px}#results{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}h2{font-size:16px;overflow-wrap:anywhere}img{width:100%}pre{white-space:pre-wrap;overflow-wrap:anywhere}article{border-top:1px solid #ccc;padding-top:12px}details{margin-top:24px}</style></head>
+<body><h1>사진 OCR 확인</h1><p>사진마다 처음 실행한 자동 인식 결과를 표시합니다. 점수 수정이나 저장은 하지 않습니다.</p><label for="photos">결과 사진 선택</label> <input id="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><p id="status" role="status">사진을 선택하세요.</p><div id="results"></div><details><summary>인식 진단</summary><pre id="json"></pre></details>
+<script type="module">
+import {readImage,flattenScreen,recognizeTotals} from '/src/ocr.js';
+const input=document.querySelector('#photos'),status=document.querySelector('#status'),results=[];
+input.onchange=async()=>{
+  input.disabled=true;results.length=0;document.querySelector('#results').replaceChildren();document.querySelector('#json').textContent='';
+  try{
+    for(const file of input.files){
+      status.textContent=file.name+' 인식 중';
+      const screen=flattenScreen(await readImage(file)),started=performance.now(),result=await recognizeTotals(screen);
+      results.push({file:file.name,elapsedMs:Math.round(performance.now()-started),...result});
+      const article=document.createElement('article'),heading=document.createElement('h2'),summary=document.createElement('pre'),image=document.createElement('img');
+      image.src=screen.toDataURL();image.alt='보정된 점수판';heading.textContent=file.name;
+      summary.textContent=result.rows.map(r=>r.label+': '+(r.score===''?'미인식':r.score)+(r.needsReview?' (확인 필요)':'')).join('\n')||result.reason;
+      article.append(heading,summary,image);document.querySelector('#results').append(article);
+      document.querySelector('#json').textContent=JSON.stringify(results,null,2);
+    }
+    status.textContent=results.length+'장 완료';
+  }catch(e){status.textContent=e.message;}finally{input.disabled=false;}
+};
+</script></body></html>
