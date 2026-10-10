@@ -1,4 +1,6 @@
 export const uid = () => crypto.randomUUID();
+export const laneLabels='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+export const nextLaneLabel=rows=>[...laneLabels].find(label=>!rows.some(row=>row.label===label));
 export function initialState() {
   return { version: 1, members: [], centers: [{ id: 'hanareum', name: '한아름볼링장', location: '건대입구역', shoeFee: 2000, rates: [
     {id:'gold',name:'평일 골드타임',note:'월~금 13시 이전 · 적용 여부 확인',general:3000,student:3000,member:3000},
@@ -37,7 +39,7 @@ export function validateState(s) {
   const center=(c)=>{if(typeof c.name!=='string'||!c.name.trim()||!Array.isArray(c.rates))throw Error('볼링장 정보를 확인하세요.');money(c.shoeFee);const rid=new Set();for(const r of c.rates){if(!r.id||rid.has(r.id)||!r.name)throw Error('요금제 정보를 확인하세요.');rid.add(r.id);for(const t of Object.keys(types))if(r[t]!==null)money(r[t]);}};
   for(const c of s.centers){unique(c.id);center(c);}
   for(const v of s.sessions){unique(v.id);if(!/^\d{4}-\d{2}-\d{2}$/.test(v.date)||!Array.isArray(v.games)||!Array.isArray(v.attendees))throw Error('방문 기록 형식이 잘못되었습니다.');center(v.centerSnapshot);const ag=new Set();for(const a of v.attendees){if(!members.has(a.memberId)||ag.has(a.memberId)||!types[a.type]||typeof a.shoeExempt!=='boolean')throw Error('정산 참가자를 확인하세요.');ag.add(a.memberId);money(a.shoeFee);if(!Array.isArray(a.charges))throw Error('정산 내역을 확인하세요.');for(const l of a.charges){money(l.unitPrice);if(!Number.isInteger(l.games)||l.games<0||l.games>1000)throw Error('게임 수를 확인하세요.');}}
-    for(const g of v.games){unique(g.id);if(!Array.isArray(g.rows)||g.rows.length<1||g.rows.length>4)throw Error('게임은 1~4명까지 기록할 수 있습니다.');const rowMembers=new Set(),lanes=new Set();for(const r of g.rows){if(!members.has(r.memberId)||!ag.has(r.memberId)||rowMembers.has(r.memberId)||!['A','B','C','D'].includes(r.label)||lanes.has(r.label)||!Number.isInteger(r.score)||r.score<0||r.score>300)throw Error('이름·행·점수(0~300)를 확인하세요.');rowMembers.add(r.memberId);lanes.add(r.label);}if(g.photo&&!/^(data:image\/(jpeg|png|webp);base64,|https:\/\/)/.test(g.photo))throw Error('사진 주소 형식이 잘못되었습니다.');}
+    for(const g of v.games){unique(g.id);if(!Array.isArray(g.rows)||g.rows.length<1||g.rows.length>laneLabels.length)throw Error('게임은 1~26명까지 기록할 수 있습니다.');const rowMembers=new Set(),lanes=new Set();for(const r of g.rows){if(!members.has(r.memberId)||!ag.has(r.memberId)||rowMembers.has(r.memberId)||typeof r.label!=='string'||r.label.length!==1||!laneLabels.includes(r.label)||lanes.has(r.label)||!Number.isInteger(r.score)||r.score<0||r.score>300)throw Error('이름·행·점수(0~300)를 확인하세요.');rowMembers.add(r.memberId);lanes.add(r.label);}if(g.photo&&!/^(data:image\/(jpeg|png|webp);base64,|https:\/\/)/.test(g.photo))throw Error('사진 주소 형식이 잘못되었습니다.');}
   }
   return s;
 }
